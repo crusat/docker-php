@@ -14,7 +14,10 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install build-essential wget git cmake unzip gcc -y
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install build-essential wget git cmake unzip gcc msmtp -y
+
+COPY msmtprc /etc/msmtprc
+RUN chmod 600 /etc/msmtprc
 
 # php modules
 
