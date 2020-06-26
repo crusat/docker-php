@@ -23,7 +23,8 @@ RUN chmod 600 /etc/msmtprc
 
 RUN docker-php-ext-install -j$(nproc) iconv mbstring mysqli pdo_mysql zip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install opcache
 
 RUN pecl install mcrypt-1.0.3 \
     && pecl install xdebug-2.8.1 \
