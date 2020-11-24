@@ -14,10 +14,16 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install build-essential wget git cmake unzip gcc msmtp -y
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install build-essential wget git cmake unzip gcc msmtp ca-certificates -y
 
 COPY msmtprc /etc/msmtprc
 RUN chmod 600 /etc/msmtprc
+
+RUN touch /var/log/msmtp.log && \
+    rm /usr/sbin/sendmail && \
+    ln -s /usr/bin/msmtp /usr/sbin/sendmail && \
+    ln -s /usr/bin/msmtp /usr/bin/sendmail && \
+    ln -s /usr/bin/msmtp /usr/lib/sendmail
 
 # php modules
 
