@@ -19,12 +19,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install build-essen
 COPY msmtprc /etc/msmtprc
 RUN chmod 600 /etc/msmtprc
 
-RUN touch /var/log/msmtp.log && \
-    rm /usr/sbin/sendmail && \
-    ln -s /usr/bin/msmtp /usr/sbin/sendmail && \
-    ln -s /usr/bin/msmtp /usr/bin/sendmail && \
-    ln -s /usr/bin/msmtp /usr/lib/sendmail
-
 # php modules
 
 RUN docker-php-ext-install -j$(nproc) iconv mbstring mysqli pdo_mysql zip \
@@ -118,8 +112,8 @@ RUN apt-get remove curl -y \
   && rm -rf "/usr/local/src/curl-${CURL_VERSION}.tar.gz" "/usr/local/src/curl-${CURL_VERSION}"
 
 # Rebuild stunnel
-ARG STUNNEL_VERSION=5.56
-ARG STUNNEL_SHA256="7384bfb356b9a89ddfee70b5ca494d187605bb516b4fff597e167f97e2236b22"
+ARG STUNNEL_VERSION=5.57
+ARG STUNNEL_SHA256="af5ab973dde11807c38735b87bdd87563a47d2fa1c72a07929fcfce80a600fe1"
 RUN cd /usr/local/src \
   && wget "https://www.stunnel.org/downloads/stunnel-${STUNNEL_VERSION}.tar.gz" -O "stunnel-${STUNNEL_VERSION}.tar.gz" \
   && echo "$STUNNEL_SHA256" "stunnel-${STUNNEL_VERSION}.tar.gz" | sha256sum -c - \
@@ -131,6 +125,12 @@ RUN cd /usr/local/src \
   && make install \
   && ln -s /usr/local/stunnel/bin/stunnel /usr/bin/stunnel \
   && rm -rf "/usr/local/src/stunnel-${STUNNEL_VERSION}.tar.gz" "/usr/local/src/stunnel-${STUNNEL_VERSION}"
+
+RUN touch /var/log/msmtp.log && \
+    rm -f /usr/sbin/sendmail && \
+    ln -s /usr/bin/msmtp /usr/sbin/sendmail && \
+    ln -s /usr/bin/msmtp /usr/bin/sendmail && \
+    ln -s /usr/bin/msmtp /usr/lib/sendmail
 
 WORKDIR "/var/www/html"
 
